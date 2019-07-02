@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FTPeeker.Models.Entities.FTPK_FTPs>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>FTP Sites</h2>
+<!--
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+-->
+<table class="table">
+    <tr>
+        <th>
+            
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DisplayName)
+        </td>
+        <td>
+            @Html.ActionLink("Browse", "Browse", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

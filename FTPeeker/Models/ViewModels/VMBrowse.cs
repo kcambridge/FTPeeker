@@ -9,14 +9,32 @@ namespace FTPeeker.Models.ViewModels
     public class VMBrowse
     {
         public ICollection<VMDirectoryItem> items { get; set; }
+        public string previousPath { get; set; }
+        public string path { get; set; }
+        public int id { get; set; }
+        public string errorMessage { get; set; }
+        public string siteName { get; set; }
+        public ICollection<VMNavigationLink> navLinks { get; set; }
 
         public VMBrowse()
         {
             this.items = new Collection<VMDirectoryItem>();
+            this.id = -1;
+            this.path = "";
+            this.previousPath = "";
+            this.errorMessage = "";
+            this.siteName = "";
+            this.navLinks = new Collection<VMNavigationLink>();
         }
-        public VMBrowse(ICollection<VMDirectoryItem> items)
+        public VMBrowse(ICollection<VMDirectoryItem> items, int id, string path, string previousPath, string siteName)
         {
             this.items = items;
+            this.id = id;
+            this.path = path;
+            this.previousPath = previousPath;
+            this.errorMessage = "";
+            this.siteName = siteName;
+            this.navLinks = new Collection<VMNavigationLink>();
         }
     }
 }

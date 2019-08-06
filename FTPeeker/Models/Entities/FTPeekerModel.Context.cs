@@ -26,5 +26,6 @@ namespace FTPeeker.Models.Entities
         }
     
         public virtual DbSet<FTPK_FTPs> FTPK_FTPs { get; set; }
+        public virtual DbSet<FTPK_Logs> FTPK_Logs { get; set; }
     }
 }

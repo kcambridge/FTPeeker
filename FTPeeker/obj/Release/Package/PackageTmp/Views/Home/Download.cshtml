@@ -1,0 +1,77 @@
+﻿@model FTPeeker.Models.ViewModels.VMDownload
+@{
+    ViewBag.Title = "Download";
+}
+
+<br />
+<h3>@Html.ActionLink("FTP Sites", "Index") / @Html.ActionLink(Model.siteName, "Browse", new {id = Model.id, path=Model.remoteDir }) / Download</h3>
+<br />
+<div class="container">
+    @if (Model.response != null)
+    {
+        if (!Model.response.success)
+        {
+            <div class="alert alert-danger col-md-12" role="alert" align="center">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>@Model.response.message</strong>
+            </div>
+        }
+
+    }
+    <div id="errorDiv">
+        <label class="label-danger" id="errorLabel">Something went wrong...</label>
+    </div>
+    <div id="infoDiv">
+        <h4 id="infoLabel">Preparing <strong>@Model.fileName</strong> for download. Please wait...</h4>
+    </div>
+
+    <div class="text-center">
+        <img src="~/Images/loading_hourglass.gif" width="300" height="300" id="loadingImage" class="img-responsive" />
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#errorDiv").hide();
+
+        var ftpID = @Model.id;
+        var remoteDir = '@Model.remoteDir';
+        var fileName = '@Model.fileName';
+
+        if(ftpID != -1 && fileName != ''){
+            $.post("@Url.Action("FetchFile")",
+              {
+                  id: @Model.id,
+                  remoteDir: '@Model.remoteDir',
+                  fileName: '@Model.fileName'
+              },
+              function(data, status){
+                  if(status == 'success'){
+                      if(data.responseCode == 'OK'){
+                          $("#infoLabel").html('File ready! Your download should start automatically...');
+                          $("#loadingImage").hide();
+                          window.location.href = '@Url.Action("DeliverFile", new { fileName =  @Uri.EscapeDataString(Model.fileName)})';
+                      }
+                      else{
+                          showError(data.message);
+                      }
+                  }
+                  else{
+                      showError('Something when wrong...');
+                  }
+              });
+        }
+        else{
+            showError("File with name '' not found.");
+        }
+    });
+
+    function showError(message){
+        $("#errorDiv").show();
+        $("#infoDiv").hide();
+        $("errorLabel").html(message);
+    }
+</script>
+

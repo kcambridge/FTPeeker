@@ -1,17 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="FTPeekerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="FTPeekerEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="FTPK_FTPs" EntityType="FTPeekerModel.FTPK_FTPs" />
+    <EntitySet Name="FTPK_Logs" EntityType="FTPeekerModel.FTPK_Logs" />
+    <AssociationSet Name="FK_FTPK_Logs_FTPK_FTPs" Association="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs">
+      <End Role="FTPK_FTPs" EntitySet="FTPK_FTPs" />
+      <End Role="FTPK_Logs" EntitySet="FTPK_Logs" />
+    </AssociationSet>
+  </EntityContainer>
   <EntityType Name="FTPK_FTPs">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="DisplayName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="Host" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="Port" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Host" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Port" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="FTPK_Logs" Relationship="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" FromRole="FTPK_FTPs" ToRole="FTPK_Logs" />
   </EntityType>
-  <EntityContainer Name="FTPeekerEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="FTPK_FTPs" EntityType="Self.FTPK_FTPs" />
-  </EntityContainer>
+  <EntityType Name="FTPK_Logs">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Action" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FileName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Path" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="SiteID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="FTPK_FTPs" Relationship="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" FromRole="FTPK_Logs" ToRole="FTPK_FTPs" />
+  </EntityType>
+  <Association Name="FK_FTPK_Logs_FTPK_FTPs">
+    <End Type="FTPeekerModel.FTPK_FTPs" Role="FTPK_FTPs" Multiplicity="1" />
+    <End Type="FTPeekerModel.FTPK_Logs" Role="FTPK_Logs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FTPK_FTPs">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FTPK_Logs">
+        <PropertyRef Name="SiteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

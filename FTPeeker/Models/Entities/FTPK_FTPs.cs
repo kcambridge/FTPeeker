@@ -14,11 +14,20 @@ namespace FTPeeker.Models.Entities
     
     public partial class FTPK_FTPs
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public FTPK_FTPs()
+        {
+            this.FTPK_Logs = new HashSet<FTPK_Logs>();
+        }
+    
         public int ID { get; set; }
         public string DisplayName { get; set; }
         public string Host { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Port { get; set; }
+        public int Port { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FTPK_Logs> FTPK_Logs { get; set; }
     }
 }

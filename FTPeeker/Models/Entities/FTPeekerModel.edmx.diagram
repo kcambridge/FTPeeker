@@ -5,7 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="81d32989853242b88499e922bb740dda" Name="Diagram1">
-        <EntityTypeShape EntityType="FTPeekerModel.FTPK_FTPs" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_FTPs" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Logs" Width="1.5" PointX="4.5" PointY="0.75" />
+        <AssociationConnector Association="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

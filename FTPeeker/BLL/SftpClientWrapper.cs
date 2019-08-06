@@ -1,5 +1,5 @@
 ﻿using FTPeeker.Models.ViewModels;
-using RecommendWebService.Models;
+using FTPeeker.Models;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
@@ -17,13 +17,13 @@ namespace FTPeeker.BLL
 
 		SftpClient sftp = null;
 
-		public SftpClientWrapper(string host, string username, string password) {
+		public SftpClientWrapper(string host, string username, string password, int port) {
 			this.host = host;
 			this.username = username;
 			this.password = password;
 
 			AuthenticationMethod authMethod = new PasswordAuthenticationMethod(username, password);
-			ConnectionInfo conInfo = new ConnectionInfo(host, username, authMethod);
+			ConnectionInfo conInfo = new ConnectionInfo(host,port, username, authMethod);
 			this.sftp = new SftpClient(conInfo);
 		}
 
@@ -47,11 +47,27 @@ namespace FTPeeker.BLL
                 sftp.ConnectionInfo.Timeout = TimeSpan.FromMinutes(30);
                 sftp.Connect();
                 sftp.ChangeDirectory("/");
-                var dirs = sftp.ListDirectory(remoteDirectory).Select(s => s.FullName);
+                
                 List<VMDirectoryItem> items = new List<VMDirectoryItem>();
-                foreach (var d in dirs)
+                var dirObjects = sftp.ListDirectory(remoteDirectory);
+
+                foreach (var dir in dirObjects)
                 {
-                    items.Add(new VMDirectoryItem(d));
+                    string d = dir.FullName;
+                    if (!d.EndsWith("/.") && !d.Contains(".."))
+                    {
+                        string typeCode = VMDirectoryItemType.FILE;
+                        int typeSequence = 1;
+                        if (dir.IsDirectory)
+                        {
+                            typeCode =VMDirectoryItemType.DIRECTORY;
+                            typeSequence = 0;
+                        }
+                        string[] parts = d.Split('/');
+                        string val = parts[parts.Length - 1];
+                        items.Add(new VMDirectoryItem(dir, remoteDirectory, typeCode, typeSequence));
+                    }
+                    
                 }
                 resp.SetSuccess();
                 resp.setData(items);
@@ -308,20 +324,20 @@ namespace FTPeeker.BLL
             return success;
 		}
 
-		public bool uploadFile(string remoteDirectory, string remoteFileName, DirectoryInfo targetDirectory, string targetFileName) {
-			Directory.CreateDirectory(targetDirectory.FullName);
+		public bool uploadFile(string remoteDirectory, string fileName, DirectoryInfo localDirectory) {
+			Directory.CreateDirectory(localDirectory.FullName);
 
 			sftp.Connect();
 			sftp.ChangeDirectory(remoteDirectory.ToString());
 
-			FileInfo file = new FileInfo(Path.Combine(targetDirectory.FullName, targetFileName));
+			FileInfo file = new FileInfo(Path.Combine(localDirectory.FullName, fileName));
 			using (FileStream fileStream = new FileStream(file.FullName, FileMode.Open)) {
-				sftp.UploadFile(fileStream, targetFileName, null);
+				sftp.UploadFile(fileStream, fileName, null);
 			}
 
 			var remoteFiles = sftp.ListDirectory(remoteDirectory);
 			foreach (var remoteFile in remoteFiles) {
-				if (remoteFile.Name.Contains(remoteFileName)) {
+				if (remoteFile.Name.Contains(fileName)) {
 					if (remoteFile.Length == file.Length) {
 						return true;
 					} else {

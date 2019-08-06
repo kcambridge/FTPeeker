@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace RecommendWebService.Models
+namespace FTPeeker.Models
 {
     public class AppResponse<T>
     {

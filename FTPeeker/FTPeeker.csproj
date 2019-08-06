@@ -47,6 +47,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GridMvc, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grid.Mvc.3.0.0\lib\net40\GridMvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
@@ -126,7 +130,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BLL\SftpClientWrapper.cs" />
-    <Compile Include="Controllers\FTPController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -150,17 +153,26 @@
     <Compile Include="Models\Entities\FTPK_FTPs.cs">
       <DependentUpon>FTPeekerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\FTPK_Logs.cs">
+      <DependentUpon>FTPeekerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ViewModels\VMDirectoryItem.cs" />
     <Compile Include="Models\ViewModels\VMBrowse.cs" />
+    <Compile Include="Models\ViewModels\VMDirectoryItemType.cs" />
+    <Compile Include="Models\ViewModels\VMDownload.cs" />
+    <Compile Include="Models\ViewModels\VMNavigationLink.cs" />
+    <Compile Include="Models\ViewModels\VMUpload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Gridmvc.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\loading_hourglass.gif" />
     <Content Include="Models\Entities\FTPeekerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>FTPeekerModel.edmx</DependentUpon>
@@ -180,7 +192,12 @@
     <Content Include="Models\Entities\FTPeekerModel.edmx.diagram">
       <DependentUpon>FTPeekerModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Grid.mvc.readme" />
+    <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\gridmvc.js" />
+    <Content Include="Scripts\gridmvc.lang.ru.js" />
+    <Content Include="Scripts\gridmvc.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -203,12 +220,13 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\FTP\Index.cshtml" />
-    <Content Include="Views\FTP\Browse.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Browse.cshtml" />
+    <Content Include="Views\Home\Download.cshtml" />
+    <Content Include="Views\Shared\_GridPager.cshtml" />
+    <Content Include="Views\Shared\_Grid.cshtml" />
+    <Content Include="Views\Home\Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,12 +4,25 @@
     <EntitySetMapping Name="FTPK_FTPs">
       <EntityTypeMapping TypeName="FTPeekerModel.FTPK_FTPs">
         <MappingFragment StoreEntitySet="FTPK_FTPs">
-          <ScalarProperty Name="ID" ColumnName="ID" />
-          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
-          <ScalarProperty Name="Host" ColumnName="Host" />
-          <ScalarProperty Name="UserName" ColumnName="UserName" />
-          <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Port" ColumnName="Port" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Host" ColumnName="Host" />
+          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FTPK_Logs">
+      <EntityTypeMapping TypeName="FTPeekerModel.FTPK_Logs">
+        <MappingFragment StoreEntitySet="FTPK_Logs">
+          <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+          <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="Action" ColumnName="Action" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

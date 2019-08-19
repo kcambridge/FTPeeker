@@ -31,6 +31,7 @@ CREATE TABLE [dbo].[FTPK_FTPs](
 	[Port] [int] NOT NULL,
 	[AuthTypeCode] [varchar](50) NOT NULL,
 	[SSHKeyPath] [varchar](500) NULL,
+	[SSHKeyPassword] [varchar](500) NULL,
  CONSTRAINT [PK_FTPK_FTPs] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

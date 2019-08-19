@@ -31,3 +31,36 @@ C:\Users\kcambridge\Documents\Visual Studio 2013\Projects\FTPeeker\FTPeeker\obj\
 C:\Users\kcambridge\Documents\Visual Studio 2013\Projects\FTPeeker\FTPeeker\obj\Debug\FTPeeker.pdb
 C:\Users\kcambridge\Documents\Visual Studio 2013\Projects\FTPeeker\FTPeeker\obj\Debug\FTPeeker.csprojResolveAssemblyReference.cache
 C:\Users\kcambridge\Documents\Visual Studio 2013\Projects\FTPeeker\FTPeeker\bin\GridMvc.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\FTPeeker.dll.config
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\FTPeeker.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\FTPeeker.pdb
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Antlr3.Runtime.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\EntityFramework.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\EntityFramework.SqlServer.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\GridMvc.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Microsoft.Web.Infrastructure.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Newtonsoft.Json.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Renci.SshNet.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Helpers.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Mvc.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Optimization.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Razor.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.Deployment.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.Razor.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\WebGrease.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\EntityFramework.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\EntityFramework.SqlServer.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Renci.SshNet.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Helpers.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Mvc.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Optimization.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.Razor.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.Deployment.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\System.Web.WebPages.Razor.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Antlr3.Runtime.pdb
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\bin\Newtonsoft.Json.xml
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\obj\Debug\FTPeeker.csprojResolveAssemblyReference.cache
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\obj\Debug\FTPeeker.dll
+C:\vagrant\gitRepos\FTPeeker\FTPeeker\obj\Debug\FTPeeker.pdb

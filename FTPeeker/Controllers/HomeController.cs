@@ -78,7 +78,7 @@ namespace FTPeeker.Controllers
 
             try
             {
-                SftpClientWrapper sftp = new SftpClientWrapper(site.Host, site.UserName, site.Password, site.Port);
+                SftpClientWrapper sftp = initSFTP(site);
                 bool res = sftp.downloadFile(remoteDir, fileName, downloadDir);
                 if (res)
                 {
@@ -195,7 +195,7 @@ namespace FTPeeker.Controllers
                 model.path = "";
             }
 
-            AppResponse<List<string>> resp = uploadBackupFiles(model.files);
+            AppResponse<List<string>> resp = uploadFiles(model.files);
 
             if (!resp.success)
             {
@@ -210,8 +210,9 @@ namespace FTPeeker.Controllers
             {
                 return HttpNotFound();
             }
-           
-            SftpClientWrapper sftp = new SftpClientWrapper(site.Host, site.UserName, site.Password, site.Port);
+
+            SftpClientWrapper sftp = initSFTP(site);
+
             string fullPath = Server.MapPath(localFileDir);
             DirectoryInfo localDir = new DirectoryInfo(fullPath);
 
@@ -275,8 +276,8 @@ namespace FTPeeker.Controllers
             {
                 return HttpNotFound();
             }
+            SftpClientWrapper sftp = initSFTP(site);
 
-            SftpClientWrapper sftp = new SftpClientWrapper(site.Host,site.UserName, site.Password,site.Port);
             AppResponse<List<VMDirectoryItem>> resp = sftp.getDirectoryContents(path);
             VMBrowse model = new VMBrowse();
             if (resp.success)
@@ -292,7 +293,7 @@ namespace FTPeeker.Controllers
             return View(model);
         }
 
-        private AppResponse<List<string>> uploadBackupFiles(HttpPostedFileBase[] files)
+        private AppResponse<List<string>> uploadFiles(HttpPostedFileBase[] files)
         {
             AppResponse<List<string>> resp = new AppResponse<List<string>>();
             //Uploading files
@@ -381,6 +382,19 @@ namespace FTPeeker.Controllers
             links.Last().isLast = true;
 
             return links;
+        }
+
+        private SftpClientWrapper initSFTP(FTPK_FTPs site)
+        {
+            if (site.AuthTypeCode == VMAuthType.SSH_KEY)
+            {
+                string sshFilePath = Server.MapPath(site.SSHKeyPath);
+                return new SftpClientWrapper(site.Host, site.UserName, site.Password, site.Port, sshFilePath, site.SSHKeyPassword);
+            }
+            else
+            {
+                return new SftpClientWrapper(site.Host, site.UserName, site.Password, site.Port);
+            }
         }
 
         private string getPreviousPath(string currentPath)

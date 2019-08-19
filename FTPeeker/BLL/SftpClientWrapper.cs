@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace FTPeeker.BLL
 {
@@ -22,22 +24,30 @@ namespace FTPeeker.BLL
 			this.username = username;
 			this.password = password;
 
-			AuthenticationMethod authMethod = new PasswordAuthenticationMethod(username, password);
+            AuthenticationMethod authMethod;
+            authMethod = new PasswordAuthenticationMethod(username, password);
 			ConnectionInfo conInfo = new ConnectionInfo(host,port, username, authMethod);
 			this.sftp = new SftpClient(conInfo);
 		}
 
-        public SftpClientWrapper(string host, string username, string password, string keyFilePath, string keyFilePass)
+        public SftpClientWrapper(string host, string username, string password, int port, string SSHKeyPath, string sshKeyFilePass)
         {
-			this.host = host;
-			this.username = username;
-			this.password = password;
+            this.host = host;
+            this.username = username;
+            this.password = password;
 
-			PrivateKeyFile pkf = new PrivateKeyFile(keyFilePath, keyFilePass);
-			AuthenticationMethod authMethod = new PrivateKeyAuthenticationMethod(username, pkf);
-			ConnectionInfo conInfo = new ConnectionInfo(host, username, authMethod);
-			this.sftp = new SftpClient(conInfo);
-		}
+            AuthenticationMethod authMethod;
+
+            string key = File.ReadAllText(SSHKeyPath);
+            //Regex removeSubjectRegex = new Regex("Subject:.*[\r\n]+", RegexOptions.IgnoreCase);
+            //key = removeSubjectRegex.Replace(key, "");
+            MemoryStream buf = new MemoryStream(Encoding.UTF8.GetBytes(key));
+            PrivateKeyFile pkf = new PrivateKeyFile(buf, sshKeyFilePass);
+            authMethod = new PrivateKeyAuthenticationMethod(username, pkf);
+           
+            ConnectionInfo conInfo = new ConnectionInfo(host, port, username, authMethod);
+            this.sftp = new SftpClient(conInfo);
+        }
 
         public AppResponse<List<VMDirectoryItem>> getDirectoryContents(string remoteDirectory)
         {

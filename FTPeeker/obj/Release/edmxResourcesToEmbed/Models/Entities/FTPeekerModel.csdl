@@ -7,6 +7,11 @@
       <End Role="FTPK_FTPs" EntitySet="FTPK_FTPs" />
       <End Role="FTPK_Logs" EntitySet="FTPK_Logs" />
     </AssociationSet>
+    <EntitySet Name="FTPK_Auth_Types" EntityType="FTPeekerModel.FTPK_Auth_Types" />
+    <AssociationSet Name="FK_FTPK_FTPs_FTPK_Auth_Types" Association="FTPeekerModel.FK_FTPK_FTPs_FTPK_Auth_Types">
+      <End Role="FTPK_Auth_Types" EntitySet="FTPK_Auth_Types" />
+      <End Role="FTPK_FTPs" EntitySet="FTPK_FTPs" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="FTPK_FTPs">
     <Key>
@@ -19,6 +24,10 @@
     <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="Port" Type="Int32" Nullable="false" />
     <NavigationProperty Name="FTPK_Logs" Relationship="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" FromRole="FTPK_FTPs" ToRole="FTPK_Logs" />
+    <Property Name="AuthTypeCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SSHKeyPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="FTPK_Auth_Types" Relationship="FTPeekerModel.FK_FTPK_FTPs_FTPK_Auth_Types" FromRole="FTPK_FTPs" ToRole="FTPK_Auth_Types" />
+    <Property Name="SSHKeyPassword" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="FTPK_Logs">
     <Key>
@@ -42,6 +51,26 @@
       </Principal>
       <Dependent Role="FTPK_Logs">
         <PropertyRef Name="SiteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="FTPK_Auth_Types">
+    <Key>
+      <PropertyRef Name="TypeCode" />
+    </Key>
+    <Property Name="TypeCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TypeDesc" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="FTPK_FTPs" Relationship="FTPeekerModel.FK_FTPK_FTPs_FTPK_Auth_Types" FromRole="FTPK_Auth_Types" ToRole="FTPK_FTPs" />
+  </EntityType>
+  <Association Name="FK_FTPK_FTPs_FTPK_Auth_Types">
+    <End Type="FTPeekerModel.FTPK_Auth_Types" Role="FTPK_Auth_Types" Multiplicity="1" />
+    <End Type="FTPeekerModel.FTPK_FTPs" Role="FTPK_FTPs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FTPK_Auth_Types">
+        <PropertyRef Name="TypeCode" />
+      </Principal>
+      <Dependent Role="FTPK_FTPs">
+        <PropertyRef Name="AuthTypeCode" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

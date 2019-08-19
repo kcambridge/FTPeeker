@@ -4,6 +4,9 @@
     <EntitySetMapping Name="FTPK_FTPs">
       <EntityTypeMapping TypeName="FTPeekerModel.FTPK_FTPs">
         <MappingFragment StoreEntitySet="FTPK_FTPs">
+          <ScalarProperty Name="SSHKeyPassword" ColumnName="SSHKeyPassword" />
+          <ScalarProperty Name="SSHKeyPath" ColumnName="SSHKeyPath" />
+          <ScalarProperty Name="AuthTypeCode" ColumnName="AuthTypeCode" />
           <ScalarProperty Name="Port" ColumnName="Port" />
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
@@ -23,6 +26,14 @@
           <ScalarProperty Name="FileName" ColumnName="FileName" />
           <ScalarProperty Name="Action" ColumnName="Action" />
           <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FTPK_Auth_Types">
+      <EntityTypeMapping TypeName="FTPeekerModel.FTPK_Auth_Types">
+        <MappingFragment StoreEntitySet="FTPK_Auth_Types">
+          <ScalarProperty Name="TypeDesc" ColumnName="TypeDesc" />
+          <ScalarProperty Name="TypeCode" ColumnName="TypeCode" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

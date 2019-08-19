@@ -8,6 +8,8 @@
         <EntityTypeShape EntityType="FTPeekerModel.FTPK_FTPs" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="FTPeekerModel.FTPK_Logs" Width="1.5" PointX="4.5" PointY="0.75" />
         <AssociationConnector Association="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Auth_Types" Width="1.5" PointX="0.75" PointY="5.375" />
+        <AssociationConnector Association="FTPeekerModel.FK_FTPK_FTPs_FTPK_Auth_Types" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

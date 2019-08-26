@@ -13,6 +13,9 @@ using System.Configuration;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
+using Renci.SshNet.Sftp;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace FTPeeker.Controllers
 {
@@ -27,13 +30,32 @@ namespace FTPeeker.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            ICollection<FTPK_FTPs> sites = dbContext.FTPK_FTPs.ToList();
+            string userID = SecurityManager.getUserID();
+            ICollection<FTPK_FTPs> sites = new Collection<FTPK_FTPs>();
+            if (SecurityManager.isAdmin())
+            {
+                sites = dbContext.FTPK_FTPs.ToList();
+            }
+            else
+            {
+                sites = dbContext.FTPK_FTPs.Where(x => x.FTPK_User_Permissions.Any(y => y.UserID == userID)).ToList();
+            }
             return View(sites);
         }
 
         [HttpGet]
-        public ActionResult DeliverFile(string fileName)
+        public ActionResult DeliverFile(int? id, string fileName)
         {
+            if (!id.HasValue)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //TODO: Need to secure this endpoint by SFTP id
+            if (!SecurityManager.canRead(id.Value))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
             string downloadPath = Server.MapPath(localFileDir);
             string localFilePath = Path.Combine(downloadPath, fileName);
             if (System.IO.File.Exists(localFilePath))
@@ -53,9 +75,16 @@ namespace FTPeeker.Controllers
         {
             AppResponse<String> resp = new AppResponse<String>();
             FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id).FirstOrDefault();
+            
             if (site == null)
             {
                 resp.SetFailure("Invalid FTP Site");
+                return Json(resp);
+            }
+
+            if (!SecurityManager.canRead(site.ID))
+            {
+                resp.SetFailure("Unauthorized");
                 return Json(resp);
             }
 
@@ -68,31 +97,55 @@ namespace FTPeeker.Controllers
             DirectoryInfo downloadDir = new DirectoryInfo(downloadPath);
             string localFilePath = Path.Combine(downloadPath, fileName);
 
-
-            //TODO: need to check if file size matches remote file here. Use local file if size the same.
-            foreach (var file in downloadDir.GetFiles().Where(x => x.Name == fileName))
-            {
-                file.Delete();
-            }
-            
-
             try
             {
+                bool useCacheFile = false;
                 SftpClientWrapper sftp = initSFTP(site);
-                bool res = sftp.downloadFile(remoteDir, fileName, downloadDir);
-                if (res)
+                FileInfo localFile = downloadDir.GetFiles().Where(x => x.Name == fileName).FirstOrDefault();
+                if (localFile != null)
                 {
-                    resp.SetSuccess();
+                    AppResponse<SftpFile> fileResp = sftp.getRemoteFileInfo(remoteDir, fileName);
+                    if (fileResp.success)
+                    {
+                        SftpFile remoteFile = fileResp.getData();
+                        if (remoteFile.Length == localFile.Length && remoteFile.LastWriteTime <= localFile.LastWriteTime)
+                        {
+                            useCacheFile = true;
+                            resp.SetSuccess();
+                        }
+                        else
+                        {
+                            localFile.Delete();
+                        }
+                    }
+                    else
+                    {
+                        localFile.Delete();
+                    }
                 }
-                else
+
+                if (!useCacheFile)
                 {
-                    resp.SetFailure("Failed to download file. Please try again later.");
+                    bool res = sftp.downloadFile(remoteDir, fileName, downloadDir);
+                    if (res)
+                    {
+                        resp.SetSuccess();
+                    }
+                    else
+                    {
+                        resp.SetFailure("Failed to download file. Please try again later.");
+                    }
                 }
+                
             }
             catch (Exception ex)
             {
-
                 resp.SetFailure(ex.Message);
+            }
+            finally
+            {
+                //kick off cache cleanup
+                Task.Factory.StartNew(this.CleanUpCache);
             }
             return Json(resp);
         }
@@ -105,81 +158,91 @@ namespace FTPeeker.Controllers
             {
                 remoteDir = "";
             }
-            if (id.HasValue && fileName != "")
+
+            if (!id.HasValue)
             {
-                string siteName = "";
-                try
-                {
-                    FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id.Value).FirstOrDefault();
-
-                    if (site == null)
-                    {
-                        return HttpNotFound("No FTP Site with ID '" + id.Value + ", found");
-                    }
-
-                    siteName = site.DisplayName;
-
-                    FTPK_Logs log = new FTPK_Logs();
-                    log.SiteID = id.Value;
-                    log.Action = ACTION_DOWNLOAD;
-                    log.FileName = fileName;
-                    log.Path = remoteDir;
-                    log.UserID = User.Identity.Name.ToString();
-                    log.LogDate = DateTime.Now;
-                    dbContext.FTPK_Logs.Add(log);
-
-                    dbContext.SaveChanges();
-                    
-                    resp.SetSuccess();
-                }
-                catch (DbEntityValidationException e)
-                {
-                    foreach (var eve in e.EntityValidationErrors)
-                    {
-                        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
-                                ve.PropertyName, ve.ErrorMessage);
-                        }
-                    }
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    resp.SetFailure(ex.Message);
-                    
-                }
-                
-
-                VMDownload model = new VMDownload(id.Value, remoteDir, fileName, siteName);
-                model.response = resp;
-                return View(model);
+                return RedirectToAction("Index");
             }
-            else
+
+            if (fileName == "")
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+           
+            string siteName = "";
+            try
+            {
+                FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id.Value).FirstOrDefault();
+
+                if (site == null)
+                {
+                    return HttpNotFound("No FTP Site with ID '" + id.Value + ", found");
+                }
+
+                if (!SecurityManager.canRead(site.ID))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+                }
+
+                siteName = site.DisplayName;
+
+                FTPK_Logs log = new FTPK_Logs();
+                log.SiteID = id.Value;
+                log.Action = ACTION_DOWNLOAD;
+                log.FileName = fileName;
+                log.Path = remoteDir;
+                log.UserID = SecurityManager.getUserID();
+                log.LogDate = DateTime.Now;
+                dbContext.FTPK_Logs.Add(log);
+
+                dbContext.SaveChanges();
+                    
+                resp.SetSuccess();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                resp.SetFailure(ex.Message);
+                    
+            }
+            VMDownload model = new VMDownload(id.Value, remoteDir, fileName, siteName);
+            model.response = resp;
+            return View(model);
         }
 
         [HttpGet]
         public ActionResult Upload(int? id, string path = "")
         {
-            if (id.HasValue)
+            if (!id.HasValue)
             {
-                FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id.Value).FirstOrDefault();
-                if (site == null)
-                {
-                    return HttpNotFound("No FTP Site with ID '"+id.Value+"' found");
-                }
-                VMUpload model = new VMUpload(id.Value, path, site.DisplayName);
-                return View(model);
+                return RedirectToAction("Index");
             }
-            else
+            FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id.Value).FirstOrDefault();
+            if (site == null)
             {
-                return HttpNotFound();
+                return HttpNotFound("No FTP Site with ID '"+id.Value+"' found");
             }
+
+            if (!SecurityManager.canUpload(site.ID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
+            VMUpload model = new VMUpload(id.Value, path, site.DisplayName);
+            return View(model);
         }
 
         [HttpPost]
@@ -211,6 +274,11 @@ namespace FTPeeker.Controllers
                 return HttpNotFound();
             }
 
+            if (!SecurityManager.canUpload(site.ID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
             SftpClientWrapper sftp = initSFTP(site);
 
             string fullPath = Server.MapPath(localFileDir);
@@ -226,7 +294,7 @@ namespace FTPeeker.Controllers
                     log.Action = ACTION_UPLOAD;
                     log.FileName = fName;
                     log.Path = model.path;
-                    log.UserID = User.Identity.Name.ToString();
+                    log.UserID = SecurityManager.getUserID();
                     log.LogDate = DateTime.Now;
                     dbContext.FTPK_Logs.Add(log);
 
@@ -269,13 +337,20 @@ namespace FTPeeker.Controllers
         {
             if (!id.HasValue)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index");
             }
+            
             FTPK_FTPs site = dbContext.FTPK_FTPs.Where(x => x.ID == id).FirstOrDefault();
             if (site == null)
             {
                 return HttpNotFound();
             }
+
+            if (!SecurityManager.canRead(site.ID))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
             SftpClientWrapper sftp = initSFTP(site);
 
             AppResponse<List<VMDirectoryItem>> resp = sftp.getDirectoryContents(path);
@@ -283,7 +358,8 @@ namespace FTPeeker.Controllers
             if (resp.success)
             {
                 List<VMDirectoryItem> items = (List<VMDirectoryItem>)resp.getData();
-                model = new VMBrowse(items.OrderBy(x => x.typeSequence).ThenBy(x => x.name).ToList(), id.Value, path, getPreviousPath(path), site.DisplayName);
+                VMSFTPPermission permissions = SecurityManager.getPermissions(site.ID);
+                model = new VMBrowse(items.OrderBy(x => x.typeSequence).ThenBy(x => x.name).ToList(), id.Value, path, getPreviousPath(path), site.DisplayName, permissions);
                 model.navLinks = getNavigationTreeLinks(path);
             }
             else
@@ -293,6 +369,29 @@ namespace FTPeeker.Controllers
             return View(model);
         }
 
+        private void CleanUpCache()
+        {
+            try
+            {
+                string downloadPath = Server.MapPath(localFileDir);
+                if (!Directory.Exists(downloadPath))
+                {
+                    Directory.CreateDirectory(downloadPath);
+                }
+                DirectoryInfo downloadDir = new DirectoryInfo(downloadPath);
+                var oldFiles = downloadDir.GetFiles().Where(x => x.LastWriteTime < DateTime.Now.AddHours(-24)).ToList();
+                foreach (var file in oldFiles)
+                {
+                    file.Delete();
+                }
+            }
+            catch (Exception)
+            {
+                
+                //do nothing
+            }
+            
+        }
         private AppResponse<List<string>> uploadFiles(HttpPostedFileBase[] files)
         {
             AppResponse<List<string>> resp = new AppResponse<List<string>>();
@@ -306,7 +405,7 @@ namespace FTPeeker.Controllers
                     {
                         if (f != null)
                         {
-                            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+                            Regex rgx = new Regex("[^a-zA-Z0-9 -_.]");
                             var uploadDir = localFileDir + "\\";
                             string fullPath = Server.MapPath(localFileDir);
                             if (!Directory.Exists(fullPath))

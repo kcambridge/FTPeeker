@@ -5,12 +5,16 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="81d32989853242b88499e922bb740dda" Name="Diagram1">
-        <EntityTypeShape EntityType="FTPeekerModel.FTPK_FTPs" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Logs" Width="1.5" PointX="4.5" PointY="0.75" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_FTPs" Width="1.5" PointX="5" PointY="0.875" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Logs" Width="1.5" PointX="7.5" PointY="0.875" />
         <AssociationConnector Association="FTPeekerModel.FK_FTPK_Logs_FTPK_FTPs" />
-        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Auth_Types" Width="1.5" PointX="0.75" PointY="5.375" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Auth_Types" Width="1.5" PointX="2.5" PointY="2" />
         <AssociationConnector Association="FTPeekerModel.FK_FTPK_FTPs_FTPK_Auth_Types" />
-      </Diagram>
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_Permissions" Width="2.125" PointX="13.125" PointY="3.375" />
+        <EntityTypeShape EntityType="FTPeekerModel.FTPK_User_Permissions" Width="2.125" PointX="9.5" PointY="3" />
+        <AssociationConnector Association="FTPeekerModel.FK_FTPK_User_Permissions_FTPK_Permissions" />
+        <AssociationConnector Association="FTPeekerModel.FTPK_User_FTP_Permissions" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

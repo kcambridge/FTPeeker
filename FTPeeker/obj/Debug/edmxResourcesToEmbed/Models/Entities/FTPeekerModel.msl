@@ -37,5 +37,30 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="FTPK_Permissions">
+      <EntityTypeMapping TypeName="FTPeekerModel.FTPK_Permissions">
+        <MappingFragment StoreEntitySet="FTPK_Permissions">
+          <ScalarProperty Name="PermissionDesc" ColumnName="PermissionDesc" />
+          <ScalarProperty Name="PermissionCode" ColumnName="PermissionCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FTPK_User_Permissions">
+      <EntityTypeMapping TypeName="FTPeekerModel.FTPK_User_Permissions">
+        <MappingFragment StoreEntitySet="FTPK_User_Permissions">
+          <ScalarProperty Name="PermissionCode" ColumnName="PermissionCode" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="FTPK_User_FTP_Permissions" TypeName="FTPeekerModel.FTPK_User_FTP_Permissions" StoreEntitySet="FTPK_User_FTP_Permissions">
+      <EndProperty Name="FTPK_User_Permissions">
+        <ScalarProperty Name="ID" ColumnName="PermissionID" />
+      </EndProperty>
+      <EndProperty Name="FTPK_FTPs">
+        <ScalarProperty Name="ID" ColumnName="FTPID" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping>

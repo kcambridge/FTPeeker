@@ -15,6 +15,7 @@ namespace FTPeeker.Models.ViewModels
         public string errorMessage { get; set; }
         public string siteName { get; set; }
         public ICollection<VMNavigationLink> navLinks { get; set; }
+        public VMSFTPPermission permissions { get; set; }
 
         public VMBrowse()
         {
@@ -25,8 +26,9 @@ namespace FTPeeker.Models.ViewModels
             this.errorMessage = "";
             this.siteName = "";
             this.navLinks = new Collection<VMNavigationLink>();
+            this.permissions = new VMSFTPPermission();
         }
-        public VMBrowse(ICollection<VMDirectoryItem> items, int id, string path, string previousPath, string siteName)
+        public VMBrowse(ICollection<VMDirectoryItem> items, int id, string path, string previousPath, string siteName, VMSFTPPermission permissions)
         {
             this.items = items;
             this.id = id;
@@ -35,6 +37,7 @@ namespace FTPeeker.Models.ViewModels
             this.errorMessage = "";
             this.siteName = siteName;
             this.navLinks = new Collection<VMNavigationLink>();
+            this.permissions = permissions;
         }
     }
 }

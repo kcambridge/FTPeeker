@@ -38,6 +38,10 @@ public partial class FTPeekerEntities : DbContext
 
     public virtual DbSet<FTPK_Auth_Types> FTPK_Auth_Types { get; set; }
 
+    public virtual DbSet<FTPK_Permissions> FTPK_Permissions { get; set; }
+
+    public virtual DbSet<FTPK_User_Permissions> FTPK_User_Permissions { get; set; }
+
 }
 
 }

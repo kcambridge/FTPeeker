@@ -129,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BLL\SecurityManager.cs" />
     <Compile Include="BLL\SftpClientWrapper.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -159,6 +160,13 @@
     <Compile Include="Models\Entities\FTPK_Logs.cs">
       <DependentUpon>FTPeekerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\FTPK_Permissions.cs">
+      <DependentUpon>FTPeekerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\FTPK_User_Permissions.cs">
+      <DependentUpon>FTPeekerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ViewModels\VMSFTPPermission.cs" />
     <Compile Include="Models\ViewModels\VMAuthType.cs" />
     <Compile Include="Models\ViewModels\VMDirectoryItem.cs" />
     <Compile Include="Models\ViewModels\VMBrowse.cs" />

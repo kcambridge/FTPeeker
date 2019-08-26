@@ -15,45 +15,23 @@ namespace FTPeeker.Models.Entities
 using System;
     using System.Collections.Generic;
     
-public partial class FTPK_FTPs
+public partial class FTPK_Permissions
 {
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public FTPK_FTPs()
+    public FTPK_Permissions()
     {
-
-        this.FTPK_Logs = new HashSet<FTPK_Logs>();
 
         this.FTPK_User_Permissions = new HashSet<FTPK_User_Permissions>();
 
     }
 
 
-    public int ID { get; set; }
+    public string PermissionCode { get; set; }
 
-    public string DisplayName { get; set; }
-
-    public string Host { get; set; }
-
-    public string UserName { get; set; }
-
-    public string Password { get; set; }
-
-    public int Port { get; set; }
-
-    public string AuthTypeCode { get; set; }
-
-    public string SSHKeyPath { get; set; }
-
-    public string SSHKeyPassword { get; set; }
+    public string PermissionDesc { get; set; }
 
 
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<FTPK_Logs> FTPK_Logs { get; set; }
-
-    public virtual FTPK_Auth_Types FTPK_Auth_Types { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 

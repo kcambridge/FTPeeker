@@ -15,9 +15,13 @@
         <strong>@Model.errorMessage</strong>
     </div>
 }
-<a href="@Url.Action("Upload",new {id = Model.id, path= Model.path})" class="btn btn-default"> <span class="glyphicon glyphicon-upload"></span>&nbsp; Upload File</a>
-<br />
-<br />
+@if (Model.permissions.canUpload)
+{
+    <a href="@Url.Action("Upload",new {id = Model.id, path= Model.path})" class="btn btn-default"> <span class="glyphicon glyphicon-upload"></span>&nbsp; Upload File</a>
+    <br />
+    <br />
+}
+
 @if (Model.navLinks != null)
 {
     <ol class="breadcrumb">

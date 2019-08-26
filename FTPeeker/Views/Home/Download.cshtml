@@ -52,7 +52,7 @@
                       if(data.responseCode == 'OK'){
                           $("#infoLabel").html('File ready! Your download should start automatically...');
                           $("#loadingImage").hide();
-                          window.location.href = '@Url.Action("DeliverFile", new { fileName =  @Uri.EscapeDataString(Model.fileName)})';
+                          window.location.href = '@Url.Action("DeliverFile", new { fileName =  @Uri.EscapeDataString(Model.fileName), id = @Model.id})';
                       }
                       else{
                           showError(data.message);

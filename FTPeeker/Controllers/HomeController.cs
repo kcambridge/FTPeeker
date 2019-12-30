@@ -305,7 +305,7 @@ namespace FTPeeker.Controllers
                     {
                         if (f != null)
                         {
-                            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+                            Regex rgx = new Regex("[^a-zA-Z0-9 -_]");
                             var uploadDir = localFileDir + "\\";
                             string fullPath = Server.MapPath(localFileDir);
                             if (!Directory.Exists(fullPath))
